@@ -32,6 +32,10 @@ public class UserDao extends AbstractHibernateDao{
         this.entityManager = entityManager;
     }
 
+    public User getUserById(Long id){
+        return (User) this.findById(id);
+    }
+
 
     public Optional<User> addUser(User user){
         add(user);

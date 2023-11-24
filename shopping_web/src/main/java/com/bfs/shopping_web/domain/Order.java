@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Table(name="orders")
 @Data
+
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +23,6 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(mappedBy = "order")
-    private List<Order_item> order_items;
+//    @OneToMany(mappedBy = "order")
+//    private List<Order_item> order_items;
 }

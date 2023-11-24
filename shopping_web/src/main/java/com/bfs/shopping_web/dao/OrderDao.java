@@ -29,11 +29,11 @@ public class OrderDao extends AbstractHibernateDao<Order>{
     public void updateOrder(Order order){ this.update(order);}
     public List<Order> getOrdersByUserId(long id) {
         Session session = getCurrentSession();
-        session.beginTransaction();
+//        session.beginTransaction();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Order> cr = cb.createQuery(Order.class);
         Root<Order> root = cr.from(Order.class);
-        cr.select(root).where(cb.equal(root.get("user_id"), id));
+        cr.select(root).where(cb.equal(root.get("user"), id));
         Query<Order> query = session.createQuery(cr);
         List<Order> result = query.getResultList();
         return result;

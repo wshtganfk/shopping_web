@@ -22,12 +22,12 @@ public abstract class AbstractHibernateDao<T> {
 
     public List<T> getAll() {
         Session session = getCurrentSession();
-        Transaction transaction = session.beginTransaction();
+//        Transaction transaction = session.beginTransaction();
 
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(clazz);
         criteria.from(clazz);
-        transaction.commit();
+//        transaction.commit();
 
         return session.createQuery(criteria).getResultList();
     }
@@ -41,16 +41,16 @@ public abstract class AbstractHibernateDao<T> {
     }
     public T update(T entity) {
         Session session = getCurrentSession();
-        Transaction transaction = session.beginTransaction();
+//        Transaction transaction = session.beginTransaction();
         System.out.println(entity);
         session.merge(entity);
-        transaction.commit();
+//        transaction.commit();
 
         System.out.println("done");
 
         return entity;
     }
-    public void deleteById(int entityId) {
+    public void deleteById(long entityId) {
         Session session = getCurrentSession();
         Transaction transaction = session.beginTransaction();
         final T entity = session.get(clazz, entityId);

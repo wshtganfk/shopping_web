@@ -23,8 +23,8 @@ public class Product {
     private double retail_price;
     @Column
     private double wholesale_price;
-    @OneToMany(mappedBy = "product")
-    private List<Order_item> order_items;
-    @OneToMany(mappedBy = "product")
-    private List<Watchlist> watchlists;
+//    @OneToMany(mappedBy = "product")
+//    private List<Order_item> order_items;
+//    @OneToMany(mappedBy = "product")
+//    private List<Watchlist> watchlists;
 }

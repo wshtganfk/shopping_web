@@ -29,6 +29,11 @@ public class UserService implements UserDetailsService {
     public Optional<User> addUser(User user){
         return userDao.addUser(user);
     }
+
+    @Transactional
+    public Optional<User> getUserById(long id){
+        return Optional.ofNullable(userDao.getUserById(id));
+    }
     @Transactional
     public List<User> getAllUsers(){
         return userDao.getAllUser();

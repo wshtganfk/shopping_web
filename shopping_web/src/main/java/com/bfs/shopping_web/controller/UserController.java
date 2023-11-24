@@ -3,12 +3,10 @@ package com.bfs.shopping_web.controller;
 import com.bfs.shopping_web.domain.User;
 import com.bfs.shopping_web.dto.common.DataResponse;
 import com.bfs.shopping_web.dto.common.LoginRequest;
-import com.bfs.shopping_web.dto.common.LoginResponse;
 import com.bfs.shopping_web.security.AuthUserDetail;
 import com.bfs.shopping_web.security.JwtProvider;
 import com.bfs.shopping_web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,17 +41,18 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public DataResponse login(@RequestBody User user) {
+    public DataResponse login(@RequestBody LoginRequest request) {
         Authentication authentication;
         try{
-            System.out.println("in try");
-            System.out.println(user.getUsername());
-            System.out.println(user.getPassword());
+            System.out.println(request.getUsername());
+            System.out.println(request.getPassword());
             authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
         } catch (AuthenticationException e){
             System.out.println("in catch");
+            e.printStackTrace();
+
             throw new BadCredentialsException("Provided credential is invalid.");
         }
         System.out.println(authentication.isAuthenticated());

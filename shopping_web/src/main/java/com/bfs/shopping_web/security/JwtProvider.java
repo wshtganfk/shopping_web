@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
@@ -25,24 +26,27 @@ public class JwtProvider {
     public Optional<AuthUserDetail> resolveToken(HttpServletRequest request){
         String prefixedToken = request.getHeader("Authorization"); // extract token value by key "Authorization"
         System.out.println(prefixedToken);
-        String token = prefixedToken.substring(7); // remove the prefix "Bearer "
+        if(StringUtils.isEmpty(prefixedToken)) return Optional.empty();
+        else {
+            String token = prefixedToken.substring(7); // remove the prefix "Bearer "
 
-        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody(); // decode
+            Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody(); // decode
 
-        String username = claims.getSubject();
-        System.out.println(username);
-        List<LinkedHashMap<String, String>> permissions = (List<LinkedHashMap<String, String>>) claims.get("permissions");
-        permissions.forEach(e-> System.out.println(e));
+            String username = claims.getSubject();
+            System.out.println(username);
+            List<LinkedHashMap<String, String>> permissions = (List<LinkedHashMap<String, String>>) claims.get("permissions");
+            permissions.forEach(e -> System.out.println(e));
 
-        List<GrantedAuthority> authorities = permissions.stream()
-                .map(p -> new SimpleGrantedAuthority(p.get("authority")))
-                .collect(Collectors.toList());
+            List<GrantedAuthority> authorities = permissions.stream()
+                    .map(p -> new SimpleGrantedAuthority(p.get("authority")))
+                    .collect(Collectors.toList());
 
-        //return a userDetail object with the permissions the user has
-        return Optional.of(AuthUserDetail.builder()
-                .username(username)
-                .authorities(authorities)
-                .build());
+            //return a userDetail object with the permissions the user has
+            return Optional.of(AuthUserDetail.builder()
+                    .username(username)
+                    .authorities(authorities)
+                    .build());
+        }
 
     }
     public String createToken(UserDetails userDetails){

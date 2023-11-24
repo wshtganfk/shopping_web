@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     private UserDetailsService userDetailsService;
     private JwtFilter jwtFilter;
 
@@ -49,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/users").hasAuthority("read")
+                .antMatchers("/users/login").permitAll()
                 .anyRequest()
                 .authenticated();
     }

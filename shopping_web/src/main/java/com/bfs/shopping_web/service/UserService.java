@@ -44,6 +44,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userOptional = userDao.getUserByUsername(username);
+        System.out.println("in service ");
 
         if (!userOptional.isPresent()){
             throw new UsernameNotFoundException("Username does not exist");

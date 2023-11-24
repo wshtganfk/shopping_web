@@ -1,5 +1,7 @@
 package com.bfs.shopping_web.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,11 +24,13 @@ public class User {
     private String username;
     @Column
     private int role;
-    @OneToMany(mappedBy = "user")
-    private List<Permission> permissions;
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders;
-    @OneToMany(mappedBy = "user")
-    private List<Watchlist> watchlists;
+//    @JsonIgnore
+//    @JsonIgnoreProperties( value = { "user" })
+//    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+//    private List<Permission> permissions;
+//    @OneToMany(mappedBy = "user")
+//    private List<Order> orders;
+//    @OneToMany(mappedBy = "user")
+//    private List<Watchlist> watchlists;
 
 }

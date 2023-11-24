@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.web.bind.annotation.RestController;
 
 
-
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UserController {
     private AuthenticationManager authenticationManager;
@@ -52,7 +52,6 @@ public class UserController {
         } catch (AuthenticationException e){
             System.out.println("in catch");
             e.printStackTrace();
-
             throw new BadCredentialsException("Provided credential is invalid.");
         }
         System.out.println(authentication.isAuthenticated());
@@ -62,33 +61,37 @@ public class UserController {
         String token = jwtProvider.createToken(authUserDetail);
         System.out.println(token);
 
-        return DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .message("Successfully Authenticated")
                 .success(true)
                 .token(token)
                 .build();
+
+        return response;
     }
 
     @PostMapping
     public DataResponse register(@RequestBody User user){
+        System.out.println("in controller");
         if(user.equals(null))
             return DataResponse.builder()
                 .message("need user info")
                 .success(false)
-                .data(null)
                 .build();
-        else if (!userService.getUserByEmail(user.getEmail()).isPresent() || !userService.getUserByUsername(user.getUsername()).isPresent())
+        else if (userService.getUserByEmail(user.getEmail()).isPresent() || userService.getUserByUsername(user.getUsername()).isPresent()){
+            System.out.println(userService.getUserByEmail(user.getEmail()).isPresent());
             return DataResponse.builder()
                     .message("user email/username already exist")
                     .success(false)
-                    .data(null)
                     .build();
+        }
+
         else {
             userService.addUser(user);
+            System.out.println("register success");
             return DataResponse.builder()
                     .message("success")
                     .success(true)
-                    .data(userService.getUserByEmail(user.getEmail()).get())
                     .build();
         }
 

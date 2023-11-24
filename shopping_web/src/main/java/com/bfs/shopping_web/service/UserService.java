@@ -1,5 +1,6 @@
 package com.bfs.shopping_web.service;
 
+import com.bfs.shopping_web.dao.PermissionDao;
 import com.bfs.shopping_web.dao.UserDao;
 import com.bfs.shopping_web.domain.Permission;
 import com.bfs.shopping_web.domain.User;
@@ -22,11 +23,11 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     @Autowired
     UserDao userDao;
+    @Autowired
+    PermissionDao permissionDao;
     @Transactional
     public Optional<User> addUser(User user){
-        if(userDao.getUserByEmail(user.getEmail()) != null
-                || userDao.getUserByUsername(user.getUsername()) != null) return null;
-        else return userDao.addUser(user);
+        return userDao.addUser(user);
     }
     @Transactional
     public List<User> getAllUsers(){
@@ -40,10 +41,14 @@ public class UserService implements UserDetailsService {
     public Optional<User>  getUserByEmail(String email){
         return userDao.getUserByEmail(email);
     }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userOptional = userDao.getUserByUsername(username);
+//        Optional<User> userOptional = userDao.getUserByUsername(username);
+        List<User> userList = userDao.getAllUser();
+
+        Optional<User> userOptional = userList.stream()
+                .filter(user -> username.equals(user.getUsername()))
+                .findFirst();
         System.out.println("in service ");
 
         if (!userOptional.isPresent()){
@@ -62,11 +67,12 @@ public class UserService implements UserDetailsService {
                 .enabled(true)
                 .build();
     }
-
     private List<GrantedAuthority> getAuthoritiesFromUser(User user){
         List<GrantedAuthority> userAuthorities = new ArrayList<>();
+        List<Permission> permissions = permissionDao.getAllPermissions();
 
-        for (Permission permission :  user.getPermissions()){
+        for (Permission permission :  permissions){
+            if(permission.getUser().equals(user))
             userAuthorities.add(new SimpleGrantedAuthority(permission.toString()));
         }
 

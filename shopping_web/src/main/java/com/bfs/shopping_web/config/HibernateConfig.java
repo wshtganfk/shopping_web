@@ -23,7 +23,7 @@ public class HibernateConfig {
     protected LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("com.bfs.hibernateprojectdemo.domain");
+        sessionFactory.setPackagesToScan("com.bfs.shopping_web.domain");
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;

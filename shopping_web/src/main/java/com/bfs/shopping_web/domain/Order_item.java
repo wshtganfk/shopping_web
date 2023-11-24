@@ -11,7 +11,7 @@ public class Order_item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    private long order_id;
+    private long item_id;
     @Column
     private double purchased_price;
     @Column

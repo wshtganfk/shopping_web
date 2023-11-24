@@ -1,6 +1,9 @@
 package com.bfs.shopping_web.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import org.springframework.data.repository.cdi.Eager;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,7 +19,9 @@ public class Permission {
     @Column
     private String value;
 
-    @ManyToOne
+//    @JsonIgnore
+//    @JsonIgnoreProperties( value = { "permissions" })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_id")
     private User user;
 

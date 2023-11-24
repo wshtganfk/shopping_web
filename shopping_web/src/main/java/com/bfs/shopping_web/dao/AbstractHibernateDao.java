@@ -22,9 +22,13 @@ public abstract class AbstractHibernateDao<T> {
 
     public List<T> getAll() {
         Session session = getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(clazz);
         criteria.from(clazz);
+        transaction.commit();
+
         return session.createQuery(criteria).getResultList();
     }
 
@@ -52,8 +56,6 @@ public abstract class AbstractHibernateDao<T> {
         final T entity = session.get(clazz, entityId);
         session.delete(entity);
         transaction.commit();
-
-
     }
 
     protected Session getCurrentSession() {

@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserDao extends AbstractHibernateDao{
@@ -18,7 +19,7 @@ public class UserDao extends AbstractHibernateDao{
         setClazz(User.class);
     }
 
-    public User addUser(User user){
+    public Optional<User> addUser(User user){
         add(user);
         return getUserByEmail(user.getEmail());
     }
@@ -27,7 +28,7 @@ public class UserDao extends AbstractHibernateDao{
         return this.getAll();
     }
 
-    public User getUserByEmail(String email){
+    public Optional<User> getUserByEmail(String email){
         Session session = getCurrentSession();
         session.beginTransaction();
         CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -38,9 +39,9 @@ public class UserDao extends AbstractHibernateDao{
         query.setMaxResults(1);
         List<User> result = query.getResultList();
         session.close();
-        return result.get(0);
+        return Optional.ofNullable(result.get(0));
     }
-    public User getUserByUsername(String username){
+    public Optional<User> getUserByUsername(String username){
         Session session = getCurrentSession();
         session.beginTransaction();
         CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -51,7 +52,7 @@ public class UserDao extends AbstractHibernateDao{
         query.setMaxResults(1);
         List<User> result = query.getResultList();
         session.close();
-        return result.get(0);
+        return Optional.ofNullable(result.get(0));
     }
 
 

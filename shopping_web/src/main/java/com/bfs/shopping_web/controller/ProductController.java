@@ -5,6 +5,8 @@ import com.bfs.shopping_web.domain.User;
 import com.bfs.shopping_web.dto.common.DataResponse;
 import com.bfs.shopping_web.dto.question.QuestionCreationRequest;
 import com.bfs.shopping_web.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -14,15 +16,14 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/products")
 public class ProductController {
-    private final ProductService productService;
+    @Autowired
+    private ProductService productService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping("/all")
     @ResponseBody
     public DataResponse getAllProducts() {
+//        JwtAuthenticationToken authenticationToken = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         return DataResponse.builder()
                 .success(true)
                 .message("Success")
@@ -58,25 +59,35 @@ public class ProductController {
                 .build();
     }
 
-//    @PostMapping("/question")
-//    @ResponseBody
-//    public DataResponse addProduct(@Valid @RequestBody QuestionCreationRequest request, BindingResult result) {
-//
-//        if (result.hasErrors()) return DataResponse.builder()
-//                                            .success(false)
-//                                            .message("Something went wrong")
-//                                            .build();
-//
-//        User user = User.builder()
-//                .description(request.getDescription())
-//                .isActive(request.isActive())
-//                .build();
-//
-//        questionService.addQuestion(user);
-//
-//        return DataResponse.builder()
-//                .success(true)
-//                .message("Success")
-//                .build();
-//    }
+    @GetMapping("/popular")
+    @ResponseBody
+    public DataResponse TopThreePopularProduct(@RequestParam ("limit") int limit){
+        return DataResponse.builder()
+                .success(true)
+                .message("success")
+                .data(productService.TopThreePopularProduct(limit))
+                .build();
+    }
+    @GetMapping("/frequent")
+    @ResponseBody
+    public DataResponse getMostFrequentlyPurchasedProduct(@RequestParam ("limit") int limit){
+        User user = new User();
+        return DataResponse.builder()
+                .success(true)
+                .message("success")
+                .data(productService.getMostFrequentlyPurchasedProduct(user))
+                .build();
+    }
+    @GetMapping("/recent")
+    @ResponseBody
+    public DataResponse getMostRecentlyPurchasedProduct(@RequestParam ("limit") int limit){
+        User user = new User();
+        return DataResponse.builder()
+                .success(true)
+                .message("success")
+                .data(productService.getMostRecentlyPurchasedProduct(user))
+                .build();
+    }
+
+
 }

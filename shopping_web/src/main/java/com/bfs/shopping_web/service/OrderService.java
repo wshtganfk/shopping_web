@@ -36,6 +36,10 @@ public class OrderService {
     public List<Order> getOrdersByUserId(long id){
         return orderDao.getOrdersByUserId(id);
     }
+    @Transactional
+    public Order getOrdersById(long id){
+        return orderDao.getOrderById(id);
+    }
 
 
 }

@@ -25,4 +25,6 @@ public class Product {
     private double wholesale_price;
     @OneToMany(mappedBy = "product")
     private List<Order_item> order_items;
+    @OneToMany(mappedBy = "product")
+    private List<Watchlist> watchlists;
 }

@@ -42,32 +42,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
-    public DataResponse register(@RequestBody User user) {
-        User newUser = userService.addUser(user);
-        if(newUser.equals(null)) return DataResponse.builder()
-                .message("user exist with username/email")
-                .success(false)
-                .data(null)
-                .build();
-        else return DataResponse.builder()
-                .message("user register success")
-                .success(true)
-                .data(newUser)
-                .build();
-    }
-
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request){
-
+    public DataResponse login(@RequestBody User user) {
         Authentication authentication;
-
         try{
             System.out.println("in try");
-            System.out.println(request.getUsername());
-            System.out.println(request.getPassword());
+            System.out.println(user.getUsername());
+            System.out.println(user.getPassword());
             authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
             );
         } catch (AuthenticationException e){
             System.out.println("in catch");
@@ -75,15 +58,41 @@ public class UserController {
         }
         System.out.println(authentication.isAuthenticated());
 
-        AuthUserDetail authUserDetail = (AuthUserDetail) authentication.getPrincipal(); //getPrincipal() returns the user object
+        AuthUserDetail authUserDetail = (AuthUserDetail) authentication.getPrincipal();
 
         String token = jwtProvider.createToken(authUserDetail);
         System.out.println(token);
 
-        return LoginResponse.builder()
+        return DataResponse.builder()
                 .message("Successfully Authenticated")
+                .success(true)
                 .token(token)
                 .build();
+    }
+
+    @PostMapping
+    public DataResponse register(@RequestBody User user){
+        if(user.equals(null))
+            return DataResponse.builder()
+                .message("need user info")
+                .success(false)
+                .data(null)
+                .build();
+        else if (!userService.getUserByEmail(user.getEmail()).isPresent() || !userService.getUserByUsername(user.getUsername()).isPresent())
+            return DataResponse.builder()
+                    .message("user email/username already exist")
+                    .success(false)
+                    .data(null)
+                    .build();
+        else {
+            userService.addUser(user);
+            return DataResponse.builder()
+                    .message("success")
+                    .success(true)
+                    .data(userService.getUserByEmail(user.getEmail()).get())
+                    .build();
+        }
+
 
     }
 

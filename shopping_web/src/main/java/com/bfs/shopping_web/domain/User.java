@@ -26,5 +26,7 @@ public class User {
     private List<Permission> permissions;
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
+    @OneToMany(mappedBy = "user")
+    private List<Watchlist> watchlists;
 
 }

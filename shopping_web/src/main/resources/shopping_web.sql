@@ -1,9 +1,12 @@
 
 drop table if exists Permission;
+drop table if exists Order_item;
 drop table if exists orders;
 drop table if exists Order_item;
+drop table if exists Watchlist;
 drop table if exists User;
 drop table if exists Product;
+drop table if exists Watchlist;
 
 
 CREATE TABLE IF NOT EXISTS User (
@@ -83,6 +86,19 @@ INSERT INTO order_item(purchased_price, quantity, wholesale_price, order_id, pro
     ( 200.00, 1, 160.00, 2, 2),
     ( 79.99, 3, 69.99, 3, 3),
     ( 1299.00, 1, 1200.00, 4, 4);
+
+CREATE TABLE IF NOT EXISTS Watchlist (
+                                    watchlist_id bigint auto_increment PRIMARY KEY,
+                                    user_id bigint not null,
+                                    product_id bigint not null,
+                                    FOREIGN KEY (user_id) REFERENCES User(user_id),
+                                    FOREIGN KEY (product_id) REFERENCES Product(product_id)
+);
+INSERT INTO Watchlist(user_id, product_id) VALUES
+    ( 1, 1),
+    ( 1, 2),
+    ( 1, 3),
+    ( 2, 2);
 
 
 

@@ -48,7 +48,7 @@ public class ProductService {
     }
 
     @Transactional
-    public List<Product> TopThreePopularProduct(){
+    public List<Product> TopThreePopularProduct(int limit){
         List<Product> productList = productDao.getAllProducts();
         Map<Product, Long> productOrderCount = productList.stream()
                 .flatMap(product -> product.getOrder_items().stream())
@@ -56,7 +56,7 @@ public class ProductService {
 
         List<Product> topThreeProducts = productOrderCount.entrySet().stream()
                 .sorted(Map.Entry.<Product, Long>comparingByValue().reversed())
-                .limit(3)
+                .limit(limit)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
         return topThreeProducts;

@@ -7,9 +7,9 @@ import com.bfs.shopping_web.dto.common.DataResponse;
 import com.bfs.shopping_web.service.OrderService;
 import com.bfs.shopping_web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -25,11 +25,18 @@ public class OrderController {
 
     @GetMapping
     @ResponseBody
+    @PreAuthorize("hasAuthority('user')")
     public DataResponse getAllOrdersByUser() {
         Authentication authenticationToken =  SecurityContextHolder.getContext().getAuthentication();
         String username = authenticationToken.getPrincipal().toString();
         User user = userService.getUserByUsername(username).get();
-        return DataResponse.builder()
+        if(user.getRole() == 1) return DataResponse.builder()
+                .success(true)
+                .message("Success")
+                .data(orderService.getAllOrders())
+                .build();
+
+        else return DataResponse.builder()
                 .success(true)
                 .message("Success")
                 .data(orderService.getOrdersByUserId(user.getUser_id()))
@@ -58,7 +65,6 @@ public class OrderController {
             }
 
         }
-        System.out.println(newOrders.toString());
         return DataResponse.builder()
                 .success(true)
                 .message("Success")
@@ -70,9 +76,7 @@ public class OrderController {
     @GetMapping("/{id}")
     @ResponseBody
     public DataResponse getOrderById(@PathVariable("id") int id) {
-        Authentication authenticationToken =  SecurityContextHolder.getContext().getAuthentication();
-        String username = authenticationToken.getPrincipal().toString();
-        User user = userService.getUserByUsername(username).get();
+
         return DataResponse.builder()
                 .success(true)
                 .message("Success")
@@ -86,13 +90,16 @@ public class OrderController {
         String username = authenticationToken.getPrincipal().toString();
         User user = userService.getUserByUsername(username).get();
         Order order = orderService.getOrdersById(orderId);
+
         String currentStatue = order.getOrder_status();
+
          if (status.equals("cancel") && !status.equals(currentStatue)) {
             order.setOrder_status("cancel");
+
             return DataResponse.builder()
                     .success(true)
                     .message("done")
-                    .data(orderService.updateOrder(order))
+                    .data(orderService.updateOrder(order, status))
                     .build();
         } else if(status.equals("complete") && !status.equals(currentStatue)){
             order.setOrder_status("complete");
@@ -105,7 +112,7 @@ public class OrderController {
                 return DataResponse.builder()
                     .success(true)
                     .message("done")
-                    .data(orderService.updateOrder(order))
+                    .data(orderService.updateOrder(order, status))
                     .build();
         }else {
             return DataResponse.builder()

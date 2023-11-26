@@ -78,7 +78,7 @@ public class UserService implements UserDetailsService {
 
         for (Permission permission :  permissions){
             if(permission.getUser().equals(user))
-            userAuthorities.add(new SimpleGrantedAuthority(permission.toString()));
+            userAuthorities.add(new SimpleGrantedAuthority(permission.getValue().toString()));
         }
 
         return userAuthorities;

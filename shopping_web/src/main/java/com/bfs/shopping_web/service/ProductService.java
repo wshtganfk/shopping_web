@@ -8,11 +8,9 @@ import com.bfs.shopping_web.domain.Order_item;
 import com.bfs.shopping_web.domain.Product;
 import com.bfs.shopping_web.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,9 +41,10 @@ public class ProductService {
         return productDao.getAllProducts();
     }
     @Transactional
-    public Product updateProduct(Product product){
+    public Product updateProduct(Product product, long id){
+        product.setProduct_id(id);
         productDao.updateProduct(product);
-        return productDao.getProductById(product.getProduct_id());
+        return productDao.getProductById(id);
     }
 
     @Transactional
@@ -98,6 +97,7 @@ public class ProductService {
                 .limit(limit)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
+        System.out.println(top3Products);
         return top3Products;
 
     }

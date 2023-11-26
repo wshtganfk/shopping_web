@@ -33,11 +33,8 @@ CREATE TABLE IF NOT EXISTS Permission (
     FOREIGN KEY (user_id) REFERENCES User(user_id)
     );
 INSERT INTO Permission(user_id, value) VALUES
-        ( 1, 'read'),
-        ( 1, 'update'),
-        ( 3, 'write'),
-        ( 3, 'read'),
-        ( 3, 'update');
+        ( 1, 'user'),
+        ( 3, 'admin');
 
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -48,8 +45,8 @@ CREATE TABLE IF NOT EXISTS orders (
     FOREIGN KEY (user_id) REFERENCES User(user_id)
 );
 INSERT INTO orders(date_placed, order_status, user_id) VALUES
-        ( '2023-04-10 10:00:00', 'completed', 1),
-        ( '2023-05-10 18:00:00', 'canceled', 1),
+        ( '2023-04-10 10:00:00', 'complete', 1),
+        ( '2023-05-10 18:00:00', 'cancel', 1),
         ( '2023-06-10 13:00:00', 'processing', 1),
         ( '2023-08-10 12:00:00', 'processing', 2);
 

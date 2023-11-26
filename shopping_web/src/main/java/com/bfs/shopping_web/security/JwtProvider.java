@@ -33,10 +33,9 @@ public class JwtProvider {
             Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody(); // decode
 
             String username = claims.getSubject();
-            System.out.println(username);
             List<LinkedHashMap<String, String>> permissions = (List<LinkedHashMap<String, String>>) claims.get("permissions");
-            permissions.forEach(e -> System.out.println(e));
 
+            // convert the permission list to a list of GrantedAuthority
             List<GrantedAuthority> authorities = permissions.stream()
                     .map(p -> new SimpleGrantedAuthority(p.get("authority")))
                     .collect(Collectors.toList());

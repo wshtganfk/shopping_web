@@ -7,16 +7,12 @@ import com.bfs.shopping_web.security.AuthUserDetail;
 import com.bfs.shopping_web.security.JwtProvider;
 import com.bfs.shopping_web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -39,26 +35,28 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @CrossOrigin
     @PostMapping("/login")
     public DataResponse login(@RequestBody LoginRequest request) {
-        Authentication authentication;
+        Authentication authentication = null;
         try{
-            System.out.println(request.getUsername());
-            System.out.println(request.getPassword());
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
+
         } catch (AuthenticationException e){
-            System.out.println("in catch");
             e.printStackTrace();
-            throw new BadCredentialsException("Provided credential is invalid.");
+//            throw new BadCredentialsException("Provided credential is invalid.");
+            return DataResponse.builder()
+                    .message("Provided credential is invalid")
+                    .success(false)
+                    .token(null)
+                    .build();
+
         }
-        System.out.println(authentication.isAuthenticated());
-
         AuthUserDetail authUserDetail = (AuthUserDetail) authentication.getPrincipal();
-
         String token = jwtProvider.createToken(authUserDetail);
-        System.out.println(token);
+
 
         DataResponse response = DataResponse.builder()
                 .message("Successfully Authenticated")
@@ -68,7 +66,7 @@ public class UserController {
 
         return response;
     }
-
+    @CrossOrigin
     @PostMapping
     public DataResponse register(@RequestBody User user){
         System.out.println("in controller");

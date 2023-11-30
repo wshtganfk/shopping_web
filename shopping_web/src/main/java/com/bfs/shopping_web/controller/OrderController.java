@@ -23,6 +23,7 @@ public class OrderController {
     @Autowired
     UserService userService;
 
+    @CrossOrigin
     @GetMapping
     @ResponseBody
     @PreAuthorize("hasAuthority('user')")
@@ -42,6 +43,8 @@ public class OrderController {
                 .data(orderService.getOrdersByUserId(user.getUser_id()))
                 .build();
     }
+
+    @CrossOrigin
     @PostMapping
     @ResponseBody
     public DataResponse addOrder(@RequestBody Object object){
@@ -73,6 +76,7 @@ public class OrderController {
 
     }
 
+    @CrossOrigin
     @GetMapping("/{id}")
     @ResponseBody
     public DataResponse getOrderById(@PathVariable("id") int id) {
@@ -83,6 +87,8 @@ public class OrderController {
                 .data(orderService.getOrdersById(id))
                 .build();
     }
+
+    @CrossOrigin
     @PatchMapping("/{orderId}")
     @ResponseBody
     public DataResponse updateOrderById(@PathVariable("orderId") Long orderId, @RequestParam String status) {

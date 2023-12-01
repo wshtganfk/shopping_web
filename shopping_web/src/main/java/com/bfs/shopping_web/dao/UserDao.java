@@ -3,6 +3,7 @@ package com.bfs.shopping_web.dao;
 import com.bfs.shopping_web.domain.Permission;
 import com.bfs.shopping_web.domain.Product;
 import com.bfs.shopping_web.domain.User;
+import com.bfs.shopping_web.exception.GlobalException;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -32,12 +33,12 @@ public class UserDao extends AbstractHibernateDao{
         this.entityManager = entityManager;
     }
 
-    public User getUserById(Long id){
+    public User getUserById(Long id)throws GlobalException {
         return (User) this.findById(id);
     }
 
 
-    public Optional<User> addUser(User user){
+    public Optional<User> addUser(User user)throws GlobalException {
         add(user);
 
         return getUserByEmail(user.getEmail());
@@ -47,7 +48,7 @@ public class UserDao extends AbstractHibernateDao{
         return this.getAll();
     }
 
-    public Optional<User> getUserByEmail(String email){
+    public Optional<User> getUserByEmail(String email)throws GlobalException {
         Session session = getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<User> cr = cb.createQuery(User.class);
@@ -59,7 +60,7 @@ public class UserDao extends AbstractHibernateDao{
         if(result.isEmpty()) return  Optional.ofNullable(null);
         else return Optional.ofNullable(result.get(0));
     }
-    public Optional<User> getUserByUsername(String username){
+    public Optional<User> getUserByUsername(String username)throws GlobalException {
         Session session = getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<User> cr = cb.createQuery(User.class);

@@ -3,6 +3,7 @@ package com.bfs.shopping_web.controller;
 import com.bfs.shopping_web.domain.User;
 import com.bfs.shopping_web.dto.common.DataResponse;
 import com.bfs.shopping_web.dto.common.LoginRequest;
+import com.bfs.shopping_web.exception.GlobalException;
 import com.bfs.shopping_web.security.AuthUserDetail;
 import com.bfs.shopping_web.security.JwtProvider;
 import com.bfs.shopping_web.service.UserService;
@@ -68,7 +69,7 @@ public class UserController {
     }
     @CrossOrigin
     @PostMapping
-    public DataResponse register(@RequestBody User user){
+    public DataResponse register(@RequestBody User user)throws GlobalException {
         System.out.println("in controller");
         if(user.equals(null))
             return DataResponse.builder()

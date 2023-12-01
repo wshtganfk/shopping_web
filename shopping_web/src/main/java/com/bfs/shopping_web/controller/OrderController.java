@@ -4,6 +4,7 @@ import com.bfs.shopping_web.domain.NewOrder;
 import com.bfs.shopping_web.domain.Order;
 import com.bfs.shopping_web.domain.User;
 import com.bfs.shopping_web.dto.common.DataResponse;
+import com.bfs.shopping_web.exception.GlobalException;
 import com.bfs.shopping_web.service.OrderService;
 import com.bfs.shopping_web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,7 @@ public class OrderController {
     @CrossOrigin
     @GetMapping
     @ResponseBody
-    @PreAuthorize("hasAuthority('user')")
-    public DataResponse getAllOrdersByUser() {
+    public DataResponse getAllOrdersByUser()throws GlobalException  {
         Authentication authenticationToken =  SecurityContextHolder.getContext().getAuthentication();
         String username = authenticationToken.getPrincipal().toString();
         User user = userService.getUserByUsername(username).get();
@@ -47,7 +47,8 @@ public class OrderController {
     @CrossOrigin
     @PostMapping
     @ResponseBody
-    public DataResponse addOrder(@RequestBody Object object){
+    public DataResponse addOrder(@RequestBody Object object)throws GlobalException {
+        System.out.println("in adding adding");
         Authentication authenticationToken =  SecurityContextHolder.getContext().getAuthentication();
         String username = authenticationToken.getPrincipal().toString();
         User user = userService.getUserByUsername(username).get();
@@ -79,23 +80,25 @@ public class OrderController {
     @CrossOrigin
     @GetMapping("/{id}")
     @ResponseBody
-    public DataResponse getOrderById(@PathVariable("id") int id) {
+    public DataResponse getOrderdetailsById(@PathVariable("id") int id) throws GlobalException {
 
         return DataResponse.builder()
                 .success(true)
-                .message("Success")
-                .data(orderService.getOrdersById(id))
+                .message("Success get order")
+                .data(orderService.getOrderdetailsById(id))
                 .build();
     }
 
     @CrossOrigin
     @PatchMapping("/{orderId}")
     @ResponseBody
-    public DataResponse updateOrderById(@PathVariable("orderId") Long orderId, @RequestParam String status) {
+    public DataResponse updateOrderById(@PathVariable("orderId") Long orderId, @RequestParam String status)throws GlobalException  {
         Authentication authenticationToken =  SecurityContextHolder.getContext().getAuthentication();
         String username = authenticationToken.getPrincipal().toString();
         User user = userService.getUserByUsername(username).get();
         Order order = orderService.getOrdersById(orderId);
+
+        System.out.println("in controller " + orderId );
 
         String currentStatue = order.getOrder_status();
 

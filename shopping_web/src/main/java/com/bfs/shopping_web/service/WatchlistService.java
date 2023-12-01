@@ -5,6 +5,7 @@ import com.bfs.shopping_web.dao.WatchlistDao;
 import com.bfs.shopping_web.domain.Product;
 import com.bfs.shopping_web.domain.User;
 import com.bfs.shopping_web.domain.Watchlist;
+import com.bfs.shopping_web.exception.GlobalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

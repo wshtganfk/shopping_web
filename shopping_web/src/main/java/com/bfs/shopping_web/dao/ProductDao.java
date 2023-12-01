@@ -2,6 +2,7 @@ package com.bfs.shopping_web.dao;
 
 import com.bfs.shopping_web.domain.Product;
 import com.bfs.shopping_web.domain.User;
+import com.bfs.shopping_web.exception.GlobalException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -18,18 +19,18 @@ public class ProductDao extends AbstractHibernateDao<Product> {
         setClazz(Product.class);
     }
 
-    public Product getProductById(long id) {
+    public Product getProductById(long id){
         return this.findById(id);
     }
 
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts()throws GlobalException  {
         return this.getAll();
     }
 
-    public void addProduct(Product product) {
+    public void addProduct(Product product)throws GlobalException  {
         this.add(product);
     }
-    public void updateProduct(Product product){ this.update(product);}
+    public void updateProduct(Product product)throws GlobalException { this.update(product);}
 
 //    public List<Product> getMostFrequentlyPurchasedProduct(){
 //        Session session = getCurrentSession();

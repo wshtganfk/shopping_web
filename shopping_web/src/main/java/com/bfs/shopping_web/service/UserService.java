@@ -4,6 +4,7 @@ import com.bfs.shopping_web.dao.PermissionDao;
 import com.bfs.shopping_web.dao.UserDao;
 import com.bfs.shopping_web.domain.Permission;
 import com.bfs.shopping_web.domain.User;
+import com.bfs.shopping_web.exception.GlobalException;
 import com.bfs.shopping_web.security.AuthUserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,24 +27,24 @@ public class UserService implements UserDetailsService {
     @Autowired
     PermissionDao permissionDao;
     @Transactional
-    public Optional<User> addUser(User user){
+    public Optional<User> addUser(User user)throws GlobalException {
         return userDao.addUser(user);
     }
 
     @Transactional
-    public Optional<User> getUserById(long id){
+    public Optional<User> getUserById(long id)throws GlobalException {
         return Optional.ofNullable(userDao.getUserById(id));
     }
     @Transactional
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers()throws GlobalException {
         return userDao.getAllUser();
     }
     @Transactional
-    public Optional<User> getUserByUsername(String username){
+    public Optional<User> getUserByUsername(String username)throws GlobalException {
         return userDao.getUserByUsername(username);
     }
     @Transactional
-    public Optional<User>  getUserByEmail(String email){
+    public Optional<User>  getUserByEmail(String email)throws GlobalException {
         return userDao.getUserByEmail(email);
     }
     @Override
@@ -72,7 +73,7 @@ public class UserService implements UserDetailsService {
                 .enabled(true)
                 .build();
     }
-    private List<GrantedAuthority> getAuthoritiesFromUser(User user){
+    private List<GrantedAuthority> getAuthoritiesFromUser(User user) {
         List<GrantedAuthority> userAuthorities = new ArrayList<>();
         List<Permission> permissions = permissionDao.getAllPermissions();
 

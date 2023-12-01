@@ -7,6 +7,7 @@ import com.bfs.shopping_web.domain.Order;
 import com.bfs.shopping_web.domain.Order_item;
 import com.bfs.shopping_web.domain.Product;
 import com.bfs.shopping_web.domain.User;
+import com.bfs.shopping_web.exception.GlobalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,42 +25,34 @@ public class ProductService {
     private Order_itemDao orderItemDao;
 
     @Transactional
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts()throws GlobalException  {
         return productDao.getAllProducts();
     }
 
     @Transactional
-    public Product getProductById(long id) {
+    public Product getProductById(long id)throws GlobalException  {
         return productDao.getProductById(id);
     }
 
     @Transactional
-    public List<Product> addProduct(Product... products) {
+    public List<Product> addProduct(Product... products)throws GlobalException  {
         for (Product product : products) {
             productDao.addProduct(product);
         }
         return productDao.getAllProducts();
     }
     @Transactional
-    public Product updateProduct(Product product, long id){
+    public Product updateProduct(Product product, long id)throws GlobalException {
         product.setProduct_id(id);
         productDao.updateProduct(product);
         return productDao.getProductById(id);
     }
 
     @Transactional
-    public List<Product> TopThreePopularProduct(int limit){
+    public List<Product> TopThreePopularProduct(int limit)throws GlobalException {
         List<Product> productList = productDao.getAllProducts();
         List<Order_item> order_items = orderItemDao.getAllOrder_items();
-//        Map<Product, Long> productOrderCount = productList.stream()
-//                .flatMap(product -> product.getOrder_items().stream())
-//                .collect(Collectors.groupingBy(e -> e.getProduct(), Collectors.counting()));
-//
-//        List<Product> topThreeProducts = productOrderCount.entrySet().stream()
-//                .sorted(Map.Entry.<Product, Long>comparingByValue().reversed())
-//                .limit(limit)
-//                .map(Map.Entry::getKey)
-//                .collect(Collectors.toList());
+
         Map<Product, Long> productOrderCount = order_items.stream()
                 .collect(Collectors.groupingBy(Order_item::getProduct, Collectors.counting()));
 
@@ -75,7 +68,7 @@ public class ProductService {
     }
 
     @Transactional
-    public List<Product> getMostProfitableProduct(int limit){
+    public List<Product> getMostProfitableProduct(int limit)throws GlobalException {
         List<Product> productList = productDao.getAllProducts();
         List<Order> allOrders = orderDao.getAllOrder();
         List<Order_item> order_items = orderItemDao.getAllOrder_items();
@@ -109,7 +102,7 @@ public class ProductService {
                 .orElse(0.0);
     }
     @Transactional
-    public List<Product> getMostFrequentlyPurchasedProduct(User user, int limit){
+    public List<Product> getMostFrequentlyPurchasedProduct(User user, int limit)throws GlobalException {
         List<Order> userOrders = orderDao.getOrdersByUserId(user.getUser_id());
         List<Order_item> order_items = orderItemDao.getAllOrder_items();
         List<Order_item> orderItemsWithUser = userOrders.stream()
@@ -143,7 +136,7 @@ public class ProductService {
         else return mostOrderedProducts.subList(0, limit);
     }
     @Transactional
-    public List<Product> getMostRecentlyPurchasedProduct(User user, int limit){
+    public List<Product> getMostRecentlyPurchasedProduct(User user, int limit)throws GlobalException {
         Optional<Order> mostRecentOrder = orderDao.getOrdersByUserId(user.getUser_id()).stream()
                 .max((order1, order2) -> order1.getDate_placed().compareTo(order2.getDate_placed()));
         List<Order_item> order_items = orderItemDao.getAllOrder_items();
